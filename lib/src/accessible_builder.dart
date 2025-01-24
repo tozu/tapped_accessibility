@@ -1,18 +1,30 @@
 part of '../tapped_accessibility.dart';
 
-// TODO Rahmen wird gezeichet, ausserhalb der Box
-// TODO fix me -> AccessibleArrowKeyScrollable weird
-// TODO inheritedWidget für Styling -> AccessiblityTheme
-// TODO  config -> if (!_keysToMaintainKeyboardSupport.contains(event.logicalKey)) {
-//             // Whenever the user uses another button than the "tab",
-//             // we want to deactivate the tab-mode.
-//             _deactivateTabMode();
-//           }
-// TODO default config -> AccessiblityTheme -> color + EdgeInsert + Border/Line width + borderRadius -> BoxDecordation??
-
+/// A widget that provides accessibility features and focus management.
+///
+/// The [AccessibleBuilder] widget enhances the accessibility of its child
+/// by managing focus and providing a way to handle submit actions.
+///
+/// This widget is useful for creating custom interactive elements that
+/// need to be accessible and focusable.
 class AccessibleBuilder extends StatefulWidget {
+  /// Callback function that is called when the widget is submitted
+  /// (e.g., tapped or activated via keyboard).
   final VoidCallback onSubmit;
+
+  /// An optional label used for debugging focus-related issues.
+  ///
+  /// This label is passed to the underlying [Focus] widget to help
+  /// identify this focusable area during debugging.
   final String? focusDebugLabel;
+
+  /// A builder function that creates the child widget.
+  ///
+  /// This function takes two parameters:
+  /// - [BuildContext] for the current build context
+  /// - [bool] indicating whether the widget currently has focus
+  ///
+  /// Use this to create a widget that can visually respond to focus changes.
   final Widget Function(BuildContext context, bool isFocused) builder;
 
   final ValueChanged<bool>? onFocusChange;
@@ -34,7 +46,8 @@ class _AccessibleBuilderState extends State<AccessibleBuilder> {
 
   late final _actionMap = <Type, Action<Intent>>{
     ActivateIntent: CallbackAction<ActivateIntent>(onInvoke: _activateOnIntent),
-    ButtonActivateIntent: CallbackAction<ButtonActivateIntent>(onInvoke: _activateOnIntent),
+    ButtonActivateIntent:
+        CallbackAction<ButtonActivateIntent>(onInvoke: _activateOnIntent),
   };
 
   @override
