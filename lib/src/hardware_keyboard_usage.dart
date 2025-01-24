@@ -1,4 +1,4 @@
-part of tapped_accessibility;
+part of '../tapped_accessibility.dart';
 
 class HardwareKeyboardUsage extends InheritedWidget {
   final bool isHardwareKeyboardUsed;

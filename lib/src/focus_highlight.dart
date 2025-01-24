@@ -1,5 +1,4 @@
-
-part of tapped_accessibility;
+part of '../tapped_accessibility.dart';
 
 class FocusHighlight extends StatefulWidget {
   final Widget child;

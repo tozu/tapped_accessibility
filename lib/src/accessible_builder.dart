@@ -1,4 +1,4 @@
-part of tapped_accessibility;
+part of '../tapped_accessibility.dart';
 
 // TODO Rahmen wird gezeichet, ausserhalb der Box
 // TODO fix me -> AccessibleArrowKeyScrollable weird
