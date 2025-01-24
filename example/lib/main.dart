@@ -80,7 +80,8 @@ class _RootPageState extends State<RootPage> {
                   dropdownValue = newValue!;
                 });
               },
-              items: List.generate(20, (index) => "Item: $index").map<DropdownMenuItem<String>>((String value) {
+              items: List.generate(20, (index) => "Item: $index")
+                  .map<DropdownMenuItem<String>>((String value) {
                 return DropdownMenuItem<String>(
                   value: value,
                   child: Text(value),
@@ -94,7 +95,8 @@ class _RootPageState extends State<RootPage> {
   }
 
   void _openListPage() {
-    Navigator.of(context).push(MaterialPageRoute(builder: (context) => ListPage()));
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (context) => ListPage()));
   }
 }
 

@@ -25,10 +25,12 @@ class ScrollableListFocusMovement extends StatefulWidget {
   });
 
   @override
-  State<ScrollableListFocusMovement> createState() => _ScrollableListFocusMovementState();
+  State<ScrollableListFocusMovement> createState() =>
+      _ScrollableListFocusMovementState();
 }
 
-class _ScrollableListFocusMovementState extends State<ScrollableListFocusMovement> {
+class _ScrollableListFocusMovementState
+    extends State<ScrollableListFocusMovement> {
   final _focusNode = FocusNode();
 
   @override
@@ -57,7 +59,8 @@ class _ScrollableListFocusMovementState extends State<ScrollableListFocusMovemen
     final (scrollableState, viewportRenderObject) = scrollData;
 
     assert(
-      scrollableState.resolvedPhysics == null || scrollableState.resolvedPhysics is! NeverScrollableScrollPhysics,
+      scrollableState.resolvedPhysics == null ||
+          scrollableState.resolvedPhysics is! NeverScrollableScrollPhysics,
       "Can not scroll the scrollable of the provided item, consider using [ScrollableListFocusMovement.scrollableKey] to have a fixed scrollable when focused.",
     );
 
@@ -69,7 +72,8 @@ class _ScrollableListFocusMovementState extends State<ScrollableListFocusMovemen
 
     if (viewport is RenderViewport) {
       final cacheExtent = viewport.cacheExtent;
-      final requiredExtent = ScrollableListFocusMovement.requiredCacheExtent(context);
+      final requiredExtent =
+          ScrollableListFocusMovement.requiredCacheExtent(context);
 
       assert(
         requiredExtent == null || (cacheExtent == requiredExtent),
@@ -83,17 +87,23 @@ class _ScrollableListFocusMovementState extends State<ScrollableListFocusMovemen
 
     ScrollPosition position() => scrollableState.position;
 
-    final heightScroll = (scrollableState.context.findRenderObject() as RenderBox?)?.size.height;
+    final heightScroll =
+        (scrollableState.context.findRenderObject() as RenderBox?)?.size.height;
     final itemHeight = (focusedItemRenderObject as RenderBox).size.height;
 
     // If the height of the item is bigger or the same height as the scroll list then we want to
     // align it at the top to make sure that the top part of that view is readable.
     // Otherwise we just want the item to be revealed starting at the bottom of the screen.
     final revealOffsetAlignment =
-        heightScroll != null && itemHeight >= heightScroll ? Alignment.topCenter.y : Alignment.bottomCenter.y;
+        heightScroll != null && itemHeight >= heightScroll
+            ? Alignment.topCenter.y
+            : Alignment.bottomCenter.y;
 
-    final rawOffset = viewport.getOffsetToReveal(focusedItemRenderObject, revealOffsetAlignment).offset;
-    var target = rawOffset.clamp(position().minScrollExtent, position().maxScrollExtent);
+    final rawOffset = viewport
+        .getOffsetToReveal(focusedItemRenderObject, revealOffsetAlignment)
+        .offset;
+    var target =
+        rawOffset.clamp(position().minScrollExtent, position().maxScrollExtent);
 
     final pixel = position().pixels;
 
