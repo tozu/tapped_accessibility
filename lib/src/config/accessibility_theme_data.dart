@@ -1,15 +1,15 @@
 part of '../../tapped_accessibility.dart';
 
-class AccessibilityTheme {
+class AccessibilityThemeData {
   final EdgeInsets padding;
   final BoxDecoration decoration;
 
-  AccessibilityTheme({required this.padding, required this.decoration});
+  AccessibilityThemeData({required this.padding, required this.decoration});
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is AccessibilityTheme &&
+      other is AccessibilityThemeData &&
           runtimeType == other.runtimeType &&
           padding == other.padding &&
           decoration == other.decoration;
@@ -19,6 +19,6 @@ class AccessibilityTheme {
 
   @override
   String toString() {
-    return 'AccessibilityTheme{padding: $padding, decoration: $decoration}';
+    return 'AccessibilityThemeData{padding: $padding, decoration: $decoration}';
   }
 }
