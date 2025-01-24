@@ -29,32 +29,35 @@ class _FocusHighlightState extends State<FocusHighlight> {
 
   @override
   Widget build(BuildContext context) {
-    return Focus(
-      canRequestFocus: false,
-      onKeyEvent: (node, event) {
-        if (event is KeyDownEvent) {
-          if (_keysToActiveKeyboardSupport.contains(event.logicalKey)) {
-            // Whenever the user uses the tab-key, we want to enable the help
-            _activateTabMode();
+    return InheritedAccessibleTheme(
+      accessibilityTheme: widget.defaultTheme,
+      child: Focus(
+        canRequestFocus: false,
+        onKeyEvent: (node, event) {
+          if (event is KeyDownEvent) {
+            if (_keysToActiveKeyboardSupport.contains(event.logicalKey)) {
+              // Whenever the user uses the tab-key, we want to enable the help
+              _activateTabMode();
+            }
+
+            if (!_keysToMaintainKeyboardSupport.contains(event.logicalKey)) {
+              // Whenever the user uses another button than the "tab",
+              // we want to deactivate the tab-mode.
+              _deactivateTabMode();
+            }
           }
 
-          if (!_keysToMaintainKeyboardSupport.contains(event.logicalKey)) {
-            // Whenever the user uses another button than the "tab",
-            // we want to deactivate the tab-mode.
-            _deactivateTabMode();
-          }
-        }
-
-        return KeyEventResult.ignored;
-      },
-      child: Listener(
-        // Whenever the user tabs somewhere, we want to deactivate the tab-mode.
-        onPointerDown: (_) => _deactivateTabMode(),
-        child: _FocusableHighlight(
-          showFocus: _isTabPressed,
-          child: HardwareKeyboardUsage(
-            isHardwareKeyboardUsed: _isTabPressed,
-            child: widget.child,
+          return KeyEventResult.ignored;
+        },
+        child: Listener(
+          // Whenever the user tabs somewhere, we want to deactivate the tab-mode.
+          onPointerDown: (_) => _deactivateTabMode(),
+          child: _FocusableHighlight(
+            showFocus: _isTabPressed,
+            child: HardwareKeyboardUsage(
+              isHardwareKeyboardUsed: _isTabPressed,
+              child: widget.child,
+            ),
           ),
         ),
       ),
@@ -89,8 +92,8 @@ class _FocusableHighlight extends StatefulWidget {
 
 class _FocusableHighlightState extends State<_FocusableHighlight> with SingleTickerProviderStateMixin {
   late Ticker _ticker;
-  final _focusElementProperties = ValueNotifier<(Offset, Size)?>(null);
-  RenderBox? _cachedFocusRenderBox;
+  final _focusElementProperties = ValueNotifier<(Offset, Size, BuildContext)?>(null);
+  BuildContext? _cachedFocusBuildContent;
 
   @override
   void initState() {
@@ -130,8 +133,8 @@ class _FocusableHighlightState extends State<_FocusableHighlight> with SingleTic
               return const SizedBox();
             }
 
-            final (position, size) = properties;
-            return _FocusHighlightIndicator(size: size, position: position);
+            final (position, size, focusedContext) = properties;
+            return _FocusHighlightIndicator(size: size, position: position, focusedContext: focusedContext);
           },
         ),
       ],
@@ -141,33 +144,35 @@ class _FocusableHighlightState extends State<_FocusableHighlight> with SingleTic
   // region callbacks
 
   void _onTick(Duration elapsed) {
-    _refreshFocusOverlay(cachedRenderBox: _cachedFocusRenderBox);
+    _refreshFocusOverlay(cachedBuildContent: _cachedFocusBuildContent);
   }
 
   void _onFocusChanged() {
     if (!widget.showFocus) {
       return;
     }
-    _refreshFocusOverlay(cachedRenderBox: null);
+    _refreshFocusOverlay(cachedBuildContent: null);
   }
 
   // endregion
 
-  /// [cachedRenderBox] is an optional parameter that can be used to provide a
+  /// [cachedBuildContent] is an optional parameter that can be used to provide a
   /// pre-fetched render box, potentially optimizing performance by avoiding
   /// redundant lookups.
   ///
   /// If no valid focused element is found, or if the position is invalid,
   /// the method will reset the ticker and state.
-  void _refreshFocusOverlay({required RenderBox? cachedRenderBox}) {
+  void _refreshFocusOverlay({required BuildContext? cachedBuildContent}) {
     // Use the provided cached render box or fetch the currently focused one
-    final box = cachedRenderBox ?? _getPrimaryFocusRenderBox();
-    if (box == null) {
+    final focusBuildContext = cachedBuildContent ?? _getPrimaryFocusBuildContent();
+    final box = focusBuildContext?.findRenderObject() as RenderBox?;
+
+    if (box == null || focusBuildContext == null) {
       _resetTickerAndState();
       return;
     }
 
-    _cachedFocusRenderBox = box;
+    _cachedFocusBuildContent = focusBuildContext;
 
     // Calculate the global position of the focused element
     final position = box.localToGlobal(Offset.zero);
@@ -177,7 +182,7 @@ class _FocusableHighlightState extends State<_FocusableHighlight> with SingleTic
     }
 
     final size = box.size;
-    final newFocusProperties = (position, size);
+    final newFocusProperties = (position, size, focusBuildContext);
 
     if (newFocusProperties == _focusElementProperties.value) return;
     _focusElementProperties.value = newFocusProperties;
@@ -189,19 +194,18 @@ class _FocusableHighlightState extends State<_FocusableHighlight> with SingleTic
     }
   }
 
-  RenderBox? _getPrimaryFocusRenderBox() {
+  BuildContext? _getPrimaryFocusBuildContent() {
     final focusNode = FocusManager.instance.primaryFocus;
     final focusContent = focusNode?.context;
 
-    //TODO return the context
-    return focusContent?.findRenderObject() as RenderBox?;
+    return focusContent;
   }
 
   void _resetTickerAndState() {
     if (_ticker.isActive) {
       _ticker.stop();
     }
-    _cachedFocusRenderBox = null;
+    _cachedFocusBuildContent = null;
     _focusElementProperties.value = null;
   }
 }
@@ -209,16 +213,18 @@ class _FocusableHighlightState extends State<_FocusableHighlight> with SingleTic
 class _FocusHighlightIndicator extends StatelessWidget {
   final Size size;
   final Offset position;
+  final BuildContext focusedContext;
 
   const _FocusHighlightIndicator({
     required this.size,
     required this.position,
+    required this.focusedContext,
   });
 
   @override
   Widget build(BuildContext context) {
     //TODO use the content of the item
-    final theme = InheritedAccessibleTheme.of(context);
+    final theme = InheritedAccessibleTheme.of(focusedContext);
 
     return Positioned(
       left: position.dx - (theme.padding.left / 2),
