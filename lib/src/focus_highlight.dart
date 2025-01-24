@@ -1,7 +1,5 @@
-import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
-import 'package:flutter/services.dart';
-import 'package:tapped_accessibility/hardware_keyboard_usage.dart';
+
+part of tapped_accessibility;
 
 class FocusHighlight extends StatefulWidget {
   final Widget child;

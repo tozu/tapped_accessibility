@@ -1,5 +1,4 @@
-import 'package:flutter/material.dart';
-
+part of tapped_accessibility;
 
 // TODO Rahmen wird gezeichet, ausserhalb der Box
 // TODO fix me -> AccessibleArrowKeyScrollable weird
@@ -36,8 +35,7 @@ class _AccessibleBuilderState extends State<AccessibleBuilder> {
 
   late final _actionMap = <Type, Action<Intent>>{
     ActivateIntent: CallbackAction<ActivateIntent>(onInvoke: _activateOnIntent),
-    ButtonActivateIntent:
-        CallbackAction<ButtonActivateIntent>(onInvoke: _activateOnIntent),
+    ButtonActivateIntent: CallbackAction<ButtonActivateIntent>(onInvoke: _activateOnIntent),
   };
 
   @override

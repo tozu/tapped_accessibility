@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+part of tapped_accessibility;
 
 class HardwareKeyboardUsage extends InheritedWidget {
   final bool isHardwareKeyboardUsed;
@@ -10,8 +10,7 @@ class HardwareKeyboardUsage extends InheritedWidget {
   });
 
   static bool isEnabled(BuildContext context) {
-    final result =
-        context.dependOnInheritedWidgetOfExactType<HardwareKeyboardUsage>();
+    final result = context.dependOnInheritedWidgetOfExactType<HardwareKeyboardUsage>();
     assert(result != null, 'No HardwareKeyboardUsage found in context');
     return result!.isHardwareKeyboardUsed;
   }

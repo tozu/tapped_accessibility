@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/rendering.dart';
-import 'package:tapped_accessibility/hardware_keyboard_usage.dart';
+part of tapped_accessibility;
 
 /// Takes care to move the focus to the next correct item if the provided [child] is a [Scrollable].
 /// Make sure to use [ScrollableListFocusMovement.requiredCacheExtent] to get the correct cache extent if
