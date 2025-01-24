@@ -1,9 +1,5 @@
 part of '../tapped_accessibility.dart';
 
-// TODO Rahmen wird gezeichet, ausserhalb der Box
-// TODO fix me -> AccessibleArrowKeyScrollable weird
-//TODO web support
-
 class AccessibleBuilder extends StatefulWidget {
   final VoidCallback onSubmit;
   final String? focusDebugLabel;
@@ -28,7 +24,8 @@ class _AccessibleBuilderState extends State<AccessibleBuilder> {
 
   late final _actionMap = <Type, Action<Intent>>{
     ActivateIntent: CallbackAction<ActivateIntent>(onInvoke: _activateOnIntent),
-    ButtonActivateIntent: CallbackAction<ButtonActivateIntent>(onInvoke: _activateOnIntent),
+    ButtonActivateIntent:
+        CallbackAction<ButtonActivateIntent>(onInvoke: _activateOnIntent),
   };
 
   @override
