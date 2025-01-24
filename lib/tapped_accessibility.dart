@@ -16,3 +16,5 @@ part 'src/scrollable_list_focus_movement.dart';
 part 'src/accessible_theme.dart';
 
 part 'src/config/accessibility_theme_data.dart';
+
+part 'src/accessible_arrow_key_scrollable.dart';

@@ -98,27 +98,50 @@ class _RootPageState extends State<RootPage> {
   }
 }
 
-class ListPage extends StatelessWidget {
+class ListPage extends StatefulWidget {
   const ListPage({super.key});
+
+  @override
+  State<ListPage> createState() => _ListPageState();
+}
+
+class _ListPageState extends State<ListPage> {
+  final scrollController = ScrollController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
-      body: ListView.builder(
-        itemBuilder: (context, index) {
-          return ListTile(
-            title: Text("Item $index"),
-            trailing: IconButton(
-              onPressed: () => Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => DetailPage(),
-                ),
-              ),
-              icon: Icon(Icons.arrow_right),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Text(
+              "This page allows scrolling the list with the arrow up and down keys.\n\nFocus one of the elements in the list and try it out.",
             ),
-          );
-        },
+          ),
+          Expanded(
+            child: AccessibleArrowKeyScrollable(
+              scrollController: scrollController,
+              child: ListView.builder(
+                controller: scrollController,
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    title: Text("Item $index"),
+                    trailing: IconButton(
+                      onPressed: () => Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => DetailPage(),
+                        ),
+                      ),
+                      icon: Icon(Icons.arrow_right),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
