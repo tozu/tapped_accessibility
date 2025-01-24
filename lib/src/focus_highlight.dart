@@ -4,9 +4,20 @@ class FocusHighlight extends StatefulWidget {
   final Widget child;
   final AccessibilityTheme defaultTheme;
 
+  final List<LogicalKeyboardKey> activateKeys;
+  final List<LogicalKeyboardKey> keepActiveKeys;
+
   const FocusHighlight({
     required this.child,
     required this.defaultTheme,
+    this.activateKeys = const [LogicalKeyboardKey.tab],
+    this.keepActiveKeys = const [
+      LogicalKeyboardKey.tab,
+      LogicalKeyboardKey.arrowUp,
+      LogicalKeyboardKey.arrowDown,
+      LogicalKeyboardKey.arrowLeft,
+      LogicalKeyboardKey.arrowRight,
+    ],
     super.key,
   });
 
@@ -15,16 +26,6 @@ class FocusHighlight extends StatefulWidget {
 }
 
 class _FocusHighlightState extends State<FocusHighlight> {
-  final _keysToActiveKeyboardSupport = [LogicalKeyboardKey.tab];
-
-  final _keysToMaintainKeyboardSupport = [
-    LogicalKeyboardKey.tab,
-    LogicalKeyboardKey.arrowUp,
-    LogicalKeyboardKey.arrowDown,
-    LogicalKeyboardKey.arrowLeft,
-    LogicalKeyboardKey.arrowRight,
-  ];
-
   bool _isTabPressed = false;
 
   @override
@@ -35,12 +36,12 @@ class _FocusHighlightState extends State<FocusHighlight> {
         canRequestFocus: false,
         onKeyEvent: (node, event) {
           if (event is KeyDownEvent) {
-            if (_keysToActiveKeyboardSupport.contains(event.logicalKey)) {
+            if (widget.activateKeys.contains(event.logicalKey)) {
               // Whenever the user uses the tab-key, we want to enable the help
               _activateTabMode();
             }
 
-            if (!_keysToMaintainKeyboardSupport.contains(event.logicalKey)) {
+            if (!widget.keepActiveKeys.contains(event.logicalKey)) {
               // Whenever the user uses another button than the "tab",
               // we want to deactivate the tab-mode.
               _deactivateTabMode();

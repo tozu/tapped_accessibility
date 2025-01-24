@@ -1,15 +1,29 @@
 # tapped_accessibility
 
-A new Flutter project.
+TODO explain why ?
 
-## Getting Started
+Need to be in the builder of the materialApp:
 
-This project is a starting point for a Flutter
-[plug-in package](https://flutter.dev/to/develop-plugins),
-a specialized package that includes platform-specific implementation code for
-Android and/or iOS.
+@override
+Widget build(BuildContext context) {
+return MaterialApp(
+home: _Page(),
+builder: (context, child) {
+return FocusHighlight(
+defaultTheme: AccessibilityTheme(
+padding: EdgeInsets.all(8),
+decoration: BoxDecoration(
+borderRadius: BorderRadius.circular(12),
+border: Border.all(
+color: Colors.green,
+width: 2,
+),
+),
+),
+child: child!,
+);
+},
+);
+}
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
-
+not in the home!!

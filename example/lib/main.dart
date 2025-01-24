@@ -14,26 +14,24 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: FocusHighlight(
-        defaultTheme: AccessibilityTheme(
-          padding: EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: Colors.green,
-              width: 2,
+      home: _Page(),
+      builder: (context, child) {
+        return FocusHighlight(
+          defaultTheme: AccessibilityTheme(
+            padding: EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: Colors.green,
+                width: 2,
+              ),
             ),
           ),
-        ),
-        child: _Page(),
-      ),
+          child: child!,
+        );
+      },
     );
   }
 }

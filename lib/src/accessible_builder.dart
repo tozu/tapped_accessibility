@@ -2,12 +2,6 @@ part of '../tapped_accessibility.dart';
 
 // TODO Rahmen wird gezeichet, ausserhalb der Box
 // TODO fix me -> AccessibleArrowKeyScrollable weird
-// TODO  config -> if (!_keysToMaintainKeyboardSupport.contains(event.logicalKey)) {
-//             // Whenever the user uses another button than the "tab",
-//             // we want to deactivate the tab-mode.
-//             _deactivateTabMode();
-//           }
-//TODO funktioniert nicht beim ersten tab
 
 class AccessibleBuilder extends StatefulWidget {
   final VoidCallback onSubmit;
