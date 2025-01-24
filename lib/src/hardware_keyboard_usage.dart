@@ -1,6 +1,10 @@
 part of '../tapped_accessibility.dart';
 
+/// Inherited widget that provides information about hardware keyboard usage.
+///
+/// Use [isEnabled] to check if a hardware keyboard is being used in descendant widgets.
 class HardwareKeyboardUsage extends InheritedWidget {
+  /// Indicates whether a hardware keyboard is currently being used.
   final bool isHardwareKeyboardUsed;
 
   const HardwareKeyboardUsage({
@@ -10,7 +14,8 @@ class HardwareKeyboardUsage extends InheritedWidget {
   });
 
   static bool isEnabled(BuildContext context) {
-    final result = context.dependOnInheritedWidgetOfExactType<HardwareKeyboardUsage>();
+    final result =
+        context.dependOnInheritedWidgetOfExactType<HardwareKeyboardUsage>();
     assert(result != null, 'No HardwareKeyboardUsage found in context');
     return result!.isHardwareKeyboardUsed;
   }

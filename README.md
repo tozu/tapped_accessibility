@@ -24,7 +24,7 @@ Simply wrap your MaterialApp into the
 
 ```dart
 MaterialApp(
-  home: yourApp(),
+    home: yourApp(),
     builder: (context, child) {
       return FocusHighlight(
         defaultTheme: AccessibilityThemeData(

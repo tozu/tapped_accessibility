@@ -1,7 +1,14 @@
 part of '../tapped_accessibility.dart';
 
+/// A widget that enables scrolling using arrow keys for improved accessibility.
+///
+/// This widget wraps a child widget and provides keyboard navigation
+/// functionality, allowing users to scroll the content using the up and down
+/// arrow keys.
 class AccessibleArrowKeyScrollable extends StatelessWidget {
+  /// The [ScrollController] used to control the scroll view.
   final ScrollController scrollController;
+
   final Widget child;
 
   const AccessibleArrowKeyScrollable({
