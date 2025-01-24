@@ -91,10 +91,11 @@ class _FocusableHighlight extends StatefulWidget {
   State<_FocusableHighlight> createState() => _FocusableHighlightState();
 }
 
-class _FocusableHighlightState extends State<_FocusableHighlight> with SingleTickerProviderStateMixin {
+class _FocusableHighlightState extends State<_FocusableHighlight>
+    with SingleTickerProviderStateMixin {
   late Ticker _ticker;
-  final _focusElementProperties = ValueNotifier<(Offset, Size, BuildContext)?>(null);
-  BuildContext? _cachedFocusBuildContent;
+  final _highlightPosition = ValueNotifier<HighlightPosition?>(null);
+  FocusNodeData? _cachedFocusNodeData;
 
   @override
   void initState() {
@@ -127,15 +128,16 @@ class _FocusableHighlightState extends State<_FocusableHighlight> with SingleTic
       children: [
         widget.child,
         ListenableBuilder(
-          listenable: _focusElementProperties,
+          listenable: _highlightPosition,
           builder: (context, _) {
-            final properties = _focusElementProperties.value;
-            if (!widget.showFocus || properties == null) {
+            final position = _highlightPosition.value;
+            if (!widget.showFocus ||
+                position == null ||
+                !position.isInsideParent) {
               return const SizedBox();
             }
 
-            final (position, size, focusedContext) = properties;
-            return _FocusHighlightIndicator(size: size, position: position, focusedContext: focusedContext);
+            return _FocusHighlightIndicator(highlightPosition: position);
           },
         ),
       ],
@@ -145,49 +147,42 @@ class _FocusableHighlightState extends State<_FocusableHighlight> with SingleTic
   // region callbacks
 
   void _onTick(Duration elapsed) {
-    _refreshFocusOverlay(cachedBuildContent: _cachedFocusBuildContent);
+    _refreshFocusOverlay(cachedFocusNodeData: _cachedFocusNodeData);
   }
 
   void _onFocusChanged() {
     if (!widget.showFocus) {
       return;
     }
-    _refreshFocusOverlay(cachedBuildContent: null);
+    _refreshFocusOverlay(cachedFocusNodeData: null);
   }
 
   // endregion
 
-  /// [cachedBuildContent] is an optional parameter that can be used to provide a
+  /// [cachedFocusNodeData] is an optional parameter that can be used to provide a
   /// pre-fetched render box, potentially optimizing performance by avoiding
   /// redundant lookups.
   ///
   /// If no valid focused element is found, or if the position is invalid,
   /// the method will reset the ticker and state.
-  void _refreshFocusOverlay({required BuildContext? cachedBuildContent}) {
-    // Use the provided cached render box or fetch the currently focused one
-    //TODO: cache renderbox since findRenderObject is expensive
-    final focusBuildContext = cachedBuildContent ?? _getPrimaryFocusBuildContent();
-    final box = focusBuildContext?.findRenderObject() as RenderBox?;
+  void _refreshFocusOverlay({required FocusNodeData? cachedFocusNodeData}) {
+    // Use the provided cached focus data or fetch the currently focused one
+    final focusNodeData = cachedFocusNodeData ?? _getPrimaryFocusNodeData();
 
-    if (box == null || focusBuildContext == null) {
+    if (focusNodeData == null) {
+      _resetTickerAndState();
+      return;
+    }
+    _cachedFocusNodeData = focusNodeData;
+
+    final newPosition = focusNodeData.getPosition();
+    if (newPosition.offset.dy.isNaN || newPosition.offset.dx.isNaN) {
       _resetTickerAndState();
       return;
     }
 
-    _cachedFocusBuildContent = focusBuildContext;
-
-    // Calculate the global position of the focused element
-    final position = box.localToGlobal(Offset.zero);
-    if (position.dy.isNaN || position.dx.isNaN) {
-      _resetTickerAndState();
-      return;
-    }
-
-    final size = box.size;
-    final newFocusProperties = (position, size, focusBuildContext);
-
-    if (newFocusProperties == _focusElementProperties.value) return;
-    _focusElementProperties.value = newFocusProperties;
+    if (newPosition == _highlightPosition.value) return;
+    _highlightPosition.value = newPosition;
 
     // Start the ticker if it's not already active which will
     // make sure that we update the overlay on every frame.
@@ -196,36 +191,44 @@ class _FocusableHighlightState extends State<_FocusableHighlight> with SingleTic
     }
   }
 
-  BuildContext? _getPrimaryFocusBuildContent() {
+  FocusNodeData? _getPrimaryFocusNodeData() {
     final focusNode = FocusManager.instance.primaryFocus;
-    final focusContent = focusNode?.context;
+    final focusContext = focusNode?.context;
 
-    return focusContent;
+    if (focusContext == null) return null;
+
+    final scrollableRenderBox = Scrollable.maybeOf(focusContext)
+        ?.context
+        .findRenderObject() as RenderBox?;
+
+    return FocusNodeData(
+      context: focusContext,
+      renderBox: focusContext.findRenderObject() as RenderBox,
+      parentScrollableRenderBox: scrollableRenderBox,
+    );
   }
 
   void _resetTickerAndState() {
     if (_ticker.isActive) {
       _ticker.stop();
     }
-    _cachedFocusBuildContent = null;
-    _focusElementProperties.value = null;
+    _cachedFocusNodeData = null;
+    _highlightPosition.value = null;
   }
 }
 
 class _FocusHighlightIndicator extends StatelessWidget {
-  final Size size;
-  final Offset position;
-  final BuildContext focusedContext;
+  final HighlightPosition highlightPosition;
 
   const _FocusHighlightIndicator({
-    required this.size,
-    required this.position,
-    required this.focusedContext,
+    required this.highlightPosition,
   });
 
   @override
   Widget build(BuildContext context) {
-    final theme = AccessibleTheme.of(focusedContext);
+    final theme = AccessibleTheme.of(highlightPosition.focusNodeContext);
+    final position = highlightPosition.offset;
+    final size = highlightPosition.size;
 
     return Positioned(
       left: position.dx - theme.padding.left,
