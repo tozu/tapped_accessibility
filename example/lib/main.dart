@@ -16,71 +16,125 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: _Page(),
-      builder: (context, child) {
+      builder: (context, widget) {
         return FocusHighlight(
           defaultTheme: AccessibilityThemeData(
-            padding: EdgeInsets.all(8),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: Colors.green,
-                width: 2,
-              ),
+              border: Border.all(color: Colors.red, width: 2),
             ),
+            padding: EdgeInsets.all(8),
           ),
-          child: child!,
+          child: widget!,
         );
       },
+      home: RootPage(),
     );
   }
 }
 
-class _Page extends StatelessWidget {
-  const _Page();
+class RootPage extends StatefulWidget {
+  const RootPage({super.key});
+
+  @override
+  State<RootPage> createState() => _RootPageState();
+}
+
+class _RootPageState extends State<RootPage> {
+  String? dropdownValue;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Tapped Accessibility'),
+        title: const Text('Plugin example app'),
       ),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.all(20),
+      body: Container(
+        padding: EdgeInsets.all(16),
         child: Column(
-          spacing: 8,
           children: [
+            Text("Press tab to move the focus around."),
+            MaterialButton(
+              onPressed: _openListPage,
+              child: Text("Basic style"),
+            ),
+            const SizedBox(height: 48),
+            Text("The following widget is customizing the focus highlight:"),
             AccessibleTheme(
               accessibilityTheme: AccessibilityThemeData(
-                padding: EdgeInsets.symmetric(horizontal: 2, vertical: 12),
+                padding: EdgeInsets.zero,
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(2),
-                  border: Border.all(
-                    color: Colors.red,
-                    width: 2,
-                  ),
+                  border: Border.all(color: Colors.green, width: 4),
+                  borderRadius: BorderRadius.circular(8),
                 ),
               ),
-              child: FilledButton(onPressed: () {}, child: Text("First custom")),
-            ),
-            AccessibleTheme(
-              accessibilityTheme: AccessibilityThemeData(
-                padding: EdgeInsets.only(left: 0, right: 12, top: 6, bottom: 0),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(2),
-                  border: Border.all(
-                    color: Colors.red,
-                    width: 2,
-                  ),
-                ),
+              child: MaterialButton(
+                onPressed: _openListPage,
+                child: Text("Custom style"),
               ),
-              child: FilledButton(onPressed: () {}, child: Text("Second custom")),
             ),
-            FilledButton(onPressed: () {}, child: Text("3")),
-            FilledButton(onPressed: () {}, child: Text("4")),
-            FilledButton(onPressed: () {}, child: Text("5")),
-            FilledButton(onPressed: () {}, child: Text("6")),
+            const SizedBox(height: 48),
+            DropdownButton<String>(
+              value: dropdownValue,
+              onChanged: (String? newValue) {
+                setState(() {
+                  dropdownValue = newValue!;
+                });
+              },
+              items: List.generate(20, (index) => "Item: $index").map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
+            ),
           ],
+        ),
+      ),
+    );
+  }
+
+  void _openListPage() {
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) => ListPage()));
+  }
+}
+
+class ListPage extends StatelessWidget {
+  const ListPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(),
+      body: ListView.builder(
+        itemBuilder: (context, index) {
+          return ListTile(
+            title: Text("Item $index"),
+            trailing: IconButton(
+              onPressed: () => Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => DetailPage(),
+                ),
+              ),
+              icon: Icon(Icons.arrow_right),
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+class DetailPage extends StatelessWidget {
+  const DetailPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(),
+      body: Center(
+        child: TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: Text("Go Back"),
         ),
       ),
     );
