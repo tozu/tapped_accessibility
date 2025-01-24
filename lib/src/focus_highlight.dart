@@ -1,10 +1,56 @@
 part of '../tapped_accessibility.dart';
 
+/// A widget that provides visual focus highlighting for keyboard navigation.
+///
+/// This widget provides a focus highlight for keyboard navigation by
+/// overlaying a visual indicator on top of the focused element.
+/// It continuously updates the position and size of the highlight to
+/// ensure accurate placement, even during scrolling or layout changes.
+///
+/// The highlight is displayed as a separate overlay layer above the child widget.
+/// This overlay technique was chosen to ensure that individual widgets don't require any specific styling,
+/// enabling the focus highlight to work out of the box without modifying your existing components.
+/// As a result, this approach provides a non-intrusive, universally applicable focus highlighting solution
+/// that can be easily integrated into existing applications with minimal changes to the existing widget structure.
+///
+/// Wrap this around the widget of your [MaterialApp.builder] and provide
+/// the [defaultTheme].
+///
+/// Example usage:
+/// ```dart
+/// MaterialApp(
+///   builder: (context, child) {
+///     return FocusHighlight(
+///       defaultTheme: AccessibilityThemeData(
+///         decoration: BoxDecoration(
+///           border: Border.all(color: Colors.blue, width: 2),
+///           borderRadius: BorderRadius.circular(4),
+///         ),
+///         padding: const EdgeInsets.all(4),
+///       ),
+///       child: child!,
+///     );
+///   },
+///   home: MyHomePage(),
+/// )
+/// ```
 class FocusHighlight extends StatefulWidget {
+  /// The widget to be wrapped.
   final Widget child;
+
+  /// The default accessibility theme to be applied.
+  /// You are able to override the theme for specific elements by wrapping it
+  /// in another [AccessibilityThemeData].
   final AccessibilityThemeData defaultTheme;
 
+  /// A list of keyboard keys that, when pressed, will activate the focus highlight.
+  ///
+  /// By default, this includes only the Tab key.
   final List<LogicalKeyboardKey> activateKeys;
+
+  /// A list of keyboard keys that, when pressed, will keep the focus highlight active.
+  ///
+  /// By default, this includes the Tab key and arrow keys (up, down, left, right).
   final List<LogicalKeyboardKey> keepActiveKeys;
 
   const FocusHighlight({
