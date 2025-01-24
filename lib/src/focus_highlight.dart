@@ -2,7 +2,7 @@ part of '../tapped_accessibility.dart';
 
 class FocusHighlight extends StatefulWidget {
   final Widget child;
-  final AccessibilityTheme defaultTheme;
+  final AccessibilityThemeData defaultTheme;
 
   final List<LogicalKeyboardKey> activateKeys;
   final List<LogicalKeyboardKey> keepActiveKeys;
@@ -30,7 +30,7 @@ class _FocusHighlightState extends State<FocusHighlight> {
 
   @override
   Widget build(BuildContext context) {
-    return InheritedAccessibleTheme(
+    return AccessibleTheme(
       accessibilityTheme: widget.defaultTheme,
       child: Focus(
         canRequestFocus: false,
@@ -165,6 +165,7 @@ class _FocusableHighlightState extends State<_FocusableHighlight> with SingleTic
   /// the method will reset the ticker and state.
   void _refreshFocusOverlay({required BuildContext? cachedBuildContent}) {
     // Use the provided cached render box or fetch the currently focused one
+    //TODO: cache renderbox since findRenderObject is expensive
     final focusBuildContext = cachedBuildContent ?? _getPrimaryFocusBuildContent();
     final box = focusBuildContext?.findRenderObject() as RenderBox?;
 
@@ -224,7 +225,7 @@ class _FocusHighlightIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = InheritedAccessibleTheme.of(focusedContext);
+    final theme = AccessibleTheme.of(focusedContext);
 
     return Positioned(
       left: position.dx - theme.padding.left,

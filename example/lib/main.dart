@@ -19,7 +19,7 @@ class _MyAppState extends State<MyApp> {
       home: _Page(),
       builder: (context, child) {
         return FocusHighlight(
-          defaultTheme: AccessibilityTheme(
+          defaultTheme: AccessibilityThemeData(
             padding: EdgeInsets.all(8),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12),
@@ -50,8 +50,8 @@ class _Page extends StatelessWidget {
         child: Column(
           spacing: 8,
           children: [
-            InheritedAccessibleTheme(
-              accessibilityTheme: AccessibilityTheme(
+            AccessibleTheme(
+              accessibilityTheme: AccessibilityThemeData(
                 padding: EdgeInsets.symmetric(horizontal: 2, vertical: 12),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(2),
@@ -63,8 +63,8 @@ class _Page extends StatelessWidget {
               ),
               child: FilledButton(onPressed: () {}, child: Text("First custom")),
             ),
-            InheritedAccessibleTheme(
-              accessibilityTheme: AccessibilityTheme(
+            AccessibleTheme(
+              accessibilityTheme: AccessibilityThemeData(
                 padding: EdgeInsets.only(left: 0, right: 12, top: 6, bottom: 0),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(2),
