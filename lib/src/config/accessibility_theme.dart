@@ -1,7 +1,5 @@
 part of '../../tapped_accessibility.dart';
 
-
-
 class AccessibilityTheme {
   final EdgeInsets padding;
   final BoxDecoration decoration;

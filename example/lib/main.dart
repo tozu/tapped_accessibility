@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tapped_accessibility/tapped_accessibility.dart';
 
 void main() {
   runApp(const MyApp());
@@ -20,12 +21,68 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Plugin example app'),
+      home: FocusHighlight(
+        defaultTheme: AccessibilityTheme(
+          padding: EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: Colors.green,
+              width: 2,
+            ),
+          ),
         ),
-        body: Center(
-          child: Text('Running on: Android'),
+        child: _Page(),
+      ),
+    );
+  }
+}
+
+class _Page extends StatelessWidget {
+  const _Page();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Tapped Accessibility'),
+      ),
+      body: SingleChildScrollView(
+        padding: EdgeInsets.all(20),
+        child: Column(
+          spacing: 8,
+          children: [
+            InheritedAccessibleTheme(
+              accessibilityTheme: AccessibilityTheme(
+                padding: EdgeInsets.symmetric(horizontal: 2, vertical: 12),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(2),
+                  border: Border.all(
+                    color: Colors.red,
+                    width: 2,
+                  ),
+                ),
+              ),
+              child: FilledButton(onPressed: () {}, child: Text("First custom")),
+            ),
+            InheritedAccessibleTheme(
+              accessibilityTheme: AccessibilityTheme(
+                padding: EdgeInsets.only(left: 0, right: 12, top: 6, bottom: 0),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(2),
+                  border: Border.all(
+                    color: Colors.red,
+                    width: 2,
+                  ),
+                ),
+              ),
+              child: FilledButton(onPressed: () {}, child: Text("Second custom")),
+            ),
+            FilledButton(onPressed: () {}, child: Text("3")),
+            FilledButton(onPressed: () {}, child: Text("4")),
+            FilledButton(onPressed: () {}, child: Text("5")),
+            FilledButton(onPressed: () {}, child: Text("6")),
+          ],
         ),
       ),
     );

@@ -223,12 +223,11 @@ class _FocusHighlightIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //TODO use the content of the item
     final theme = InheritedAccessibleTheme.of(focusedContext);
 
     return Positioned(
-      left: position.dx - (theme.padding.left / 2),
-      top: position.dy - (theme.padding.top / 2),
+      left: position.dx - theme.padding.left,
+      top: position.dy - theme.padding.top,
       child: IgnorePointer(
         child: Container(
           width: size.width + theme.padding.horizontal,
