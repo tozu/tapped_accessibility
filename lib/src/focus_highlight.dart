@@ -2,9 +2,11 @@ part of '../tapped_accessibility.dart';
 
 class FocusHighlight extends StatefulWidget {
   final Widget child;
+  final AccessibilityTheme defaultTheme;
 
   const FocusHighlight({
     required this.child,
+    required this.defaultTheme,
     super.key,
   });
 
@@ -191,6 +193,7 @@ class _FocusableHighlightState extends State<_FocusableHighlight> with SingleTic
     final focusNode = FocusManager.instance.primaryFocus;
     final focusContent = focusNode?.context;
 
+    //TODO return the context
     return focusContent?.findRenderObject() as RenderBox?;
   }
 
@@ -204,8 +207,6 @@ class _FocusableHighlightState extends State<_FocusableHighlight> with SingleTic
 }
 
 class _FocusHighlightIndicator extends StatelessWidget {
-  static const _padding = 14.0;
-
   final Size size;
   final Offset position;
 
@@ -216,20 +217,17 @@ class _FocusHighlightIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    //TODO use the content of the item
+    final theme = InheritedAccessibleTheme.of(context);
+
     return Positioned(
-      left: position.dx - (_padding / 2),
-      top: position.dy - (_padding / 2),
+      left: position.dx - (theme.padding.left / 2),
+      top: position.dy - (theme.padding.top / 2),
       child: IgnorePointer(
         child: Container(
-          width: size.width + _padding,
-          height: size.height + _padding,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(23),
-            border: Border.all(
-              color: Colors.green, //TODO adjustable
-              width: 2,
-            ),
-          ),
+          width: size.width + theme.padding.horizontal,
+          height: size.height + theme.padding.vertical,
+          decoration: theme.decoration,
         ),
       ),
     );

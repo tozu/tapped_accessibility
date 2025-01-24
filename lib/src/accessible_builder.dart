@@ -9,7 +9,6 @@ part of '../tapped_accessibility.dart';
 //             _deactivateTabMode();
 //           }
 // TODO default config -> AccessiblityTheme -> color + EdgeInsert + Border/Line width + borderRadius -> BoxDecordation??
-// -> TODO https://github.com/tappeddev/tapped_accessibility
 
 class AccessibleBuilder extends StatefulWidget {
   final VoidCallback onSubmit;

@@ -12,3 +12,7 @@ part 'src/focus_highlight.dart';
 part 'src/hardware_keyboard_usage.dart';
 
 part 'src/scrollable_list_focus_movement.dart';
+
+part 'src/inherited_accessible_theme.dart';
+
+part 'src/config/accessibility_theme.dart';
