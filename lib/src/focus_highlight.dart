@@ -281,24 +281,26 @@ class _FocusHighlightIndicator extends StatelessWidget {
     return Positioned(
       left: position.dx - theme.padding.left,
       top: position.dy - theme.padding.top,
-      child: Builder(builder: (context) {
-        final child = IgnorePointer(
-          child: Container(
-            width: size.width + theme.padding.horizontal,
-            height: size.height + theme.padding.vertical,
-            decoration: theme.decoration,
-          ),
-        );
-
-        if (localParentRect != null) {
-          return ClipRect(
-            clipper: _ParentRectClipper(parentRect: localParentRect),
-            child: child,
+      child: Builder(
+        builder: (context) {
+          final child = IgnorePointer(
+            child: Container(
+              width: size.width + theme.padding.horizontal,
+              height: size.height + theme.padding.vertical,
+              decoration: theme.decoration,
+            ),
           );
-        } else {
-          return child;
-        }
-      }),
+
+          if (localParentRect != null) {
+            return ClipRect(
+              clipper: _ParentRectClipper(parentRect: localParentRect),
+              child: child,
+            );
+          } else {
+            return child;
+          }
+        },
+      ),
     );
   }
 }
