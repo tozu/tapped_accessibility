@@ -14,15 +14,14 @@ class FocusNodeData {
   HighlightPosition getPosition() {
     final size = renderBox.size;
     final offset = renderBox.localToGlobal(Offset.zero);
-    final childRect = offset & size;
+
     final parentRect = parentScrollableRenderBox?.toRect();
 
     return HighlightPosition(
       focusNodeContext: context,
       offset: offset,
       size: size,
-      rect: childRect,
-      parentRect: parentRect,
+      localParentRect: renderBox.toLocalParentRect(parentRect: parentRect),
     );
   }
 }
@@ -31,16 +30,13 @@ class HighlightPosition {
   final Size size;
   final Offset offset;
   final BuildContext focusNodeContext;
-
-  final Rect rect;
-  final Rect? parentRect;
+  final Rect? localParentRect;
 
   HighlightPosition({
     required this.size,
     required this.offset,
     required this.focusNodeContext,
-    required this.rect,
-    required this.parentRect,
+    required this.localParentRect,
   });
 }
 
@@ -48,10 +44,15 @@ extension on RenderBox {
   Rect toRect() {
     return localToGlobal(Offset.zero) & size;
   }
-}
 
-extension RectExtensions on Rect {
-  bool containsRect(Rect other) {
-    return contains(other.topLeft) || contains(other.bottomRight);
+  Rect? toLocalParentRect({required Rect? parentRect}) {
+    if (parentRect == null) return null;
+
+    return Rect.fromLTRB(
+      globalToLocal(parentRect.topLeft).dx,
+      globalToLocal(parentRect.topLeft).dy,
+      globalToLocal(parentRect.bottomRight).dx,
+      globalToLocal(parentRect.bottomRight).dy,
+    );
   }
 }

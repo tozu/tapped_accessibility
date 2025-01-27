@@ -272,9 +272,7 @@ class _FocusHighlightIndicator extends StatelessWidget {
     final position = highlightPosition.offset;
     final size = highlightPosition.size;
 
-    final parentRect = highlightPosition.parentRect;
-    final renderBox =
-        highlightPosition.focusNodeContext.findRenderObject() as RenderBox?;
+    final localParentRect = highlightPosition.localParentRect;
 
     return Positioned(
       left: position.dx - theme.padding.left,
@@ -288,14 +286,7 @@ class _FocusHighlightIndicator extends StatelessWidget {
           ),
         );
 
-        if (parentRect != null && renderBox != null) {
-          final localParentRect = Rect.fromLTRB(
-            renderBox.globalToLocal(parentRect.topLeft).dx,
-            renderBox.globalToLocal(parentRect.topLeft).dy,
-            renderBox.globalToLocal(parentRect.bottomRight).dx,
-            renderBox.globalToLocal(parentRect.bottomRight).dy,
-          );
-
+        if (localParentRect != null) {
           return ClipRect(
             clipper: _ParentRectClipper(parentRect: localParentRect),
             child: child,
