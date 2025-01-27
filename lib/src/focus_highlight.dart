@@ -177,7 +177,11 @@ class _FocusableHighlightState extends State<_FocusableHighlight>
           listenable: _highlightPosition,
           builder: (context, _) {
             final position = _highlightPosition.value;
-            if (!widget.showFocus || position == null) {
+
+            if (!widget.showFocus ||
+                position == null ||
+                !position.isInsideParent) {
+              // we clip the child anywhere, but checking if anything is inside the parent, we don't need to clip to improve the performance
               return const SizedBox();
             }
 
