@@ -14,8 +14,10 @@ class FocusNodeData {
   HighlightPosition getPosition() {
     final size = renderBox.size;
     final offset = renderBox.localToGlobal(Offset.zero);
+
     final childRect = offset & size;
     final parentRect = parentScrollableRenderBox?.toRect();
+
     final isInsideParent = parentRect?.containsRect(childRect) ?? true;
 
     return HighlightPosition(
@@ -23,8 +25,24 @@ class FocusNodeData {
       offset: offset,
       size: size,
       isInsideParent: isInsideParent,
+      localParentRect: renderBox.toLocalParentRect(parentRect: parentRect),
     );
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is FocusNodeData &&
+          runtimeType == other.runtimeType &&
+          context == other.context &&
+          renderBox == other.renderBox &&
+          parentScrollableRenderBox == other.parentScrollableRenderBox;
+
+  @override
+  int get hashCode =>
+      context.hashCode ^
+      renderBox.hashCode ^
+      parentScrollableRenderBox.hashCode;
 }
 
 class HighlightPosition {
@@ -32,12 +50,14 @@ class HighlightPosition {
   final Offset offset;
   final BuildContext focusNodeContext;
   final bool isInsideParent;
+  final Rect? localParentRect;
 
   HighlightPosition({
     required this.size,
     required this.offset,
     required this.focusNodeContext,
     required this.isInsideParent,
+    required this.localParentRect,
   });
 
   @override
@@ -48,24 +68,37 @@ class HighlightPosition {
           size == other.size &&
           offset == other.offset &&
           focusNodeContext == other.focusNodeContext &&
-          isInsideParent == other.isInsideParent;
+          isInsideParent == other.isInsideParent &&
+          localParentRect == other.localParentRect;
 
   @override
   int get hashCode =>
       size.hashCode ^
       offset.hashCode ^
       focusNodeContext.hashCode ^
-      isInsideParent.hashCode;
+      isInsideParent.hashCode ^
+      localParentRect.hashCode;
+}
+
+extension RectExtensions on Rect {
+  bool containsRect(Rect other) {
+    return contains(other.topLeft) || contains(other.bottomRight);
+  }
 }
 
 extension on RenderBox {
   Rect toRect() {
     return localToGlobal(Offset.zero) & size;
   }
-}
 
-extension RectExtensions on Rect {
-  bool containsRect(Rect other) {
-    return contains(other.topLeft) || contains(other.bottomRight);
+  Rect? toLocalParentRect({required Rect? parentRect}) {
+    if (parentRect == null) return null;
+
+    return Rect.fromLTRB(
+      globalToLocal(parentRect.topLeft).dx,
+      globalToLocal(parentRect.topLeft).dy,
+      globalToLocal(parentRect.bottomRight).dx,
+      globalToLocal(parentRect.bottomRight).dy,
+    );
   }
 }

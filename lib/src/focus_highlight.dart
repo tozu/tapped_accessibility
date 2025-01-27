@@ -177,9 +177,11 @@ class _FocusableHighlightState extends State<_FocusableHighlight>
           listenable: _highlightPosition,
           builder: (context, _) {
             final position = _highlightPosition.value;
+
             if (!widget.showFocus ||
                 position == null ||
                 !position.isInsideParent) {
+              // we clip the child anywhere, but checking if anything is inside the parent, we don't need to clip to improve the performance
               return const SizedBox();
             }
 
@@ -266,9 +268,7 @@ class _FocusableHighlightState extends State<_FocusableHighlight>
 class _FocusHighlightIndicator extends StatelessWidget {
   final HighlightPosition highlightPosition;
 
-  const _FocusHighlightIndicator({
-    required this.highlightPosition,
-  });
+  const _FocusHighlightIndicator({required this.highlightPosition});
 
   @override
   Widget build(BuildContext context) {
@@ -276,16 +276,46 @@ class _FocusHighlightIndicator extends StatelessWidget {
     final position = highlightPosition.offset;
     final size = highlightPosition.size;
 
+    final localParentRect = highlightPosition.localParentRect;
+
     return Positioned(
       left: position.dx - theme.padding.left,
       top: position.dy - theme.padding.top,
-      child: IgnorePointer(
-        child: Container(
-          width: size.width + theme.padding.horizontal,
-          height: size.height + theme.padding.vertical,
-          decoration: theme.decoration,
-        ),
+      child: Builder(
+        builder: (context) {
+          final child = IgnorePointer(
+            child: Container(
+              width: size.width + theme.padding.horizontal,
+              height: size.height + theme.padding.vertical,
+              decoration: theme.decoration,
+            ),
+          );
+
+          if (localParentRect != null) {
+            return ClipRect(
+              clipper: _ParentRectClipper(parentRect: localParentRect),
+              child: child,
+            );
+          } else {
+            return child;
+          }
+        },
       ),
     );
+  }
+}
+
+class _ParentRectClipper extends CustomClipper<Rect> {
+  final Rect parentRect;
+
+  _ParentRectClipper({required this.parentRect});
+
+  @override
+  Rect getClip(Size size) => parentRect;
+
+  @override
+  bool shouldReclip(covariant CustomClipper<Rect> oldClipper) {
+    return oldClipper is _ParentRectClipper &&
+        oldClipper.parentRect != parentRect;
   }
 }
