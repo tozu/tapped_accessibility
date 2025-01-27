@@ -28,6 +28,21 @@ class FocusNodeData {
       localParentRect: renderBox.toLocalParentRect(parentRect: parentRect),
     );
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is FocusNodeData &&
+          runtimeType == other.runtimeType &&
+          context == other.context &&
+          renderBox == other.renderBox &&
+          parentScrollableRenderBox == other.parentScrollableRenderBox;
+
+  @override
+  int get hashCode =>
+      context.hashCode ^
+      renderBox.hashCode ^
+      parentScrollableRenderBox.hashCode;
 }
 
 class HighlightPosition {
@@ -44,6 +59,25 @@ class HighlightPosition {
     required this.isInsideParent,
     required this.localParentRect,
   });
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is HighlightPosition &&
+          runtimeType == other.runtimeType &&
+          size == other.size &&
+          offset == other.offset &&
+          focusNodeContext == other.focusNodeContext &&
+          isInsideParent == other.isInsideParent &&
+          localParentRect == other.localParentRect;
+
+  @override
+  int get hashCode =>
+      size.hashCode ^
+      offset.hashCode ^
+      focusNodeContext.hashCode ^
+      isInsideParent.hashCode ^
+      localParentRect.hashCode;
 }
 
 extension RectExtensions on Rect {
