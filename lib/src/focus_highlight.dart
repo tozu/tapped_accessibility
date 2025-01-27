@@ -311,10 +311,7 @@ class _ParentRectClipper extends CustomClipper<Rect> {
   _ParentRectClipper({required this.parentRect});
 
   @override
-  Rect getClip(Size size) {
-    // Gibt das Begrenzungsrechteck zurück
-    return parentRect;
-  }
+  Rect getClip(Size size) => parentRect;
 
   @override
   bool shouldReclip(covariant CustomClipper<Rect> oldClipper) {
