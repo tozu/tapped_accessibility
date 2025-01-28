@@ -15,16 +15,12 @@ class FocusNodeData {
     final size = renderBox.size;
     final offset = renderBox.localToGlobal(Offset.zero);
 
-    final childRect = offset & size;
     final parentRect = parentScrollableRenderBox?.toRect();
-
-    final isInsideParent = parentRect?.containsRect(childRect) ?? true;
 
     return HighlightPosition(
       focusNodeContext: context,
       offset: offset,
       size: size,
-      isInsideParent: isInsideParent,
       parentRect: parentRect,
     );
   }
@@ -49,14 +45,13 @@ class HighlightPosition {
   final Size size;
   final Offset offset;
   final BuildContext focusNodeContext;
-  final bool isInsideParent;
+
   final Rect? parentRect;
 
   HighlightPosition({
     required this.size,
     required this.offset,
     required this.focusNodeContext,
-    required this.isInsideParent,
     required this.parentRect,
   });
 
@@ -68,7 +63,6 @@ class HighlightPosition {
           size == other.size &&
           offset == other.offset &&
           focusNodeContext == other.focusNodeContext &&
-          isInsideParent == other.isInsideParent &&
           parentRect == other.parentRect;
 
   @override
@@ -76,14 +70,7 @@ class HighlightPosition {
       size.hashCode ^
       offset.hashCode ^
       focusNodeContext.hashCode ^
-      isInsideParent.hashCode ^
       parentRect.hashCode;
-}
-
-extension RectExtensions on Rect {
-  bool containsRect(Rect other) {
-    return contains(other.topLeft) || contains(other.bottomRight);
-  }
 }
 
 extension on RenderBox {

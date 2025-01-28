@@ -98,7 +98,7 @@ class _FocusHighlightState extends State<FocusHighlight> {
         },
         child: Listener(
           // Whenever the user tabs somewhere, we want to deactivate the tab-mode.
-          onPointerDown: (_) => _deactivateTabMode(),
+          // onPointerDown: (_) => _deactivateTabMode(),
           child: _FocusableHighlight(
             showFocus: _isTabPressed,
             child: HardwareKeyboardUsage(
@@ -178,10 +178,7 @@ class _FocusableHighlightState extends State<_FocusableHighlight>
           builder: (context, _) {
             final position = _highlightPosition.value;
 
-            if (!widget.showFocus ||
-                position == null ||
-                !position.isInsideParent) {
-              // we clip the child anywhere, but checking if anything is inside the parent, we don't need to clip to improve the performance
+            if (position == null) {
               return const SizedBox();
             }
 
