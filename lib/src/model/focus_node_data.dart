@@ -15,17 +15,14 @@ class FocusNodeData {
     final size = renderBox.size;
     final offset = renderBox.localToGlobal(Offset.zero);
 
-    final childRect = offset & size;
     final parentRect = parentScrollableRenderBox?.toRect();
-
-    final isInsideParent = parentRect?.containsRect(childRect) ?? true;
 
     return HighlightPosition(
       focusNodeContext: context,
       offset: offset,
+      renderBox: renderBox,
       size: size,
-      isInsideParent: isInsideParent,
-      localParentRect: renderBox.toLocalParentRect(parentRect: parentRect),
+      parentRect: parentRect,
     );
   }
 
@@ -49,15 +46,15 @@ class HighlightPosition {
   final Size size;
   final Offset offset;
   final BuildContext focusNodeContext;
-  final bool isInsideParent;
-  final Rect? localParentRect;
+  final RenderBox renderBox;
+  final Rect? parentRect;
 
   HighlightPosition({
     required this.size,
     required this.offset,
     required this.focusNodeContext,
-    required this.isInsideParent,
-    required this.localParentRect,
+    required this.renderBox,
+    required this.parentRect,
   });
 
   @override
@@ -68,37 +65,20 @@ class HighlightPosition {
           size == other.size &&
           offset == other.offset &&
           focusNodeContext == other.focusNodeContext &&
-          isInsideParent == other.isInsideParent &&
-          localParentRect == other.localParentRect;
+          renderBox == other.renderBox &&
+          parentRect == other.parentRect;
 
   @override
   int get hashCode =>
       size.hashCode ^
       offset.hashCode ^
       focusNodeContext.hashCode ^
-      isInsideParent.hashCode ^
-      localParentRect.hashCode;
-}
-
-extension RectExtensions on Rect {
-  bool containsRect(Rect other) {
-    return contains(other.topLeft) || contains(other.bottomRight);
-  }
+      renderBox.hashCode ^
+      parentRect.hashCode;
 }
 
 extension on RenderBox {
   Rect toRect() {
     return localToGlobal(Offset.zero) & size;
-  }
-
-  Rect? toLocalParentRect({required Rect? parentRect}) {
-    if (parentRect == null) return null;
-
-    return Rect.fromLTRB(
-      globalToLocal(parentRect.topLeft).dx,
-      globalToLocal(parentRect.topLeft).dy,
-      globalToLocal(parentRect.bottomRight).dx,
-      globalToLocal(parentRect.bottomRight).dy,
-    );
   }
 }

@@ -178,10 +178,7 @@ class _FocusableHighlightState extends State<_FocusableHighlight>
           builder: (context, _) {
             final position = _highlightPosition.value;
 
-            if (!widget.showFocus ||
-                position == null ||
-                !position.isInsideParent) {
-              // we clip the child anywhere, but checking if anything is inside the parent, we don't need to clip to improve the performance
+            if (position == null) {
               return const SizedBox();
             }
 
@@ -276,24 +273,29 @@ class _FocusHighlightIndicator extends StatelessWidget {
     final position = highlightPosition.offset;
     final size = highlightPosition.size;
 
-    final localParentRect = highlightPosition.localParentRect;
+    final parentRect = highlightPosition.parentRect;
 
     return Positioned(
-      left: position.dx - theme.padding.left,
-      top: position.dy - theme.padding.top,
+      left: position.dx - theme.horizontalPadding,
+      top: position.dy - theme.verticalPadding,
       child: Builder(
         builder: (context) {
           final child = IgnorePointer(
             child: Container(
-              width: size.width + theme.padding.horizontal,
-              height: size.height + theme.padding.vertical,
-              decoration: theme.decoration,
+              width: size.width + (theme.horizontalPadding * 2),
+              height: size.height + (theme.verticalPadding * 2),
+              foregroundDecoration: theme.decoration,
             ),
           );
 
-          if (localParentRect != null) {
+          if (parentRect != null) {
             return ClipRect(
-              clipper: _ParentRectClipper(parentRect: localParentRect),
+              clipper: _ParentRectClipper(
+                parentRect: parentRect,
+                renderBox: highlightPosition.renderBox,
+                verticalPadding: theme.verticalPadding,
+                horizontalPadding: theme.horizontalPadding,
+              ),
               child: child,
             );
           } else {
@@ -307,15 +309,35 @@ class _FocusHighlightIndicator extends StatelessWidget {
 
 class _ParentRectClipper extends CustomClipper<Rect> {
   final Rect parentRect;
+  final RenderBox renderBox;
+  final double verticalPadding;
+  final double horizontalPadding;
 
-  _ParentRectClipper({required this.parentRect});
+  _ParentRectClipper({
+    required this.parentRect,
+    required this.renderBox,
+    required this.verticalPadding,
+    required this.horizontalPadding,
+  });
 
   @override
-  Rect getClip(Size size) => parentRect;
+  Rect getClip(Size size) {
+    final parentRectWithPadding = EdgeInsets.symmetric(
+      horizontal: horizontalPadding,
+      vertical: verticalPadding,
+    ).inflateRect(parentRect);
 
-  @override
-  bool shouldReclip(covariant CustomClipper<Rect> oldClipper) {
-    return oldClipper is _ParentRectClipper &&
-        oldClipper.parentRect != parentRect;
+    final paddingOffset = Offset(horizontalPadding, verticalPadding);
+
+    final topLeft =
+        renderBox.globalToLocal(parentRectWithPadding.topLeft + paddingOffset);
+
+    final bottomRight = renderBox
+        .globalToLocal(parentRectWithPadding.bottomRight + paddingOffset);
+
+    return Rect.fromPoints(topLeft, bottomRight);
   }
+
+  @override
+  bool shouldReclip(covariant _ParentRectClipper oldClipper) => true;
 }
