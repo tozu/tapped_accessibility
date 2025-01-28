@@ -20,6 +20,7 @@ class FocusNodeData {
     return HighlightPosition(
       focusNodeContext: context,
       offset: offset,
+      renderBox: renderBox,
       size: size,
       parentRect: parentRect,
     );
@@ -45,13 +46,14 @@ class HighlightPosition {
   final Size size;
   final Offset offset;
   final BuildContext focusNodeContext;
-
+  final RenderBox renderBox;
   final Rect? parentRect;
 
   HighlightPosition({
     required this.size,
     required this.offset,
     required this.focusNodeContext,
+    required this.renderBox,
     required this.parentRect,
   });
 
@@ -63,6 +65,7 @@ class HighlightPosition {
           size == other.size &&
           offset == other.offset &&
           focusNodeContext == other.focusNodeContext &&
+          renderBox == other.renderBox &&
           parentRect == other.parentRect;
 
   @override
@@ -70,6 +73,7 @@ class HighlightPosition {
       size.hashCode ^
       offset.hashCode ^
       focusNodeContext.hashCode ^
+      renderBox.hashCode ^
       parentRect.hashCode;
 }
 

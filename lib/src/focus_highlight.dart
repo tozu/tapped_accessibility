@@ -276,14 +276,14 @@ class _FocusHighlightIndicator extends StatelessWidget {
     final parentRect = highlightPosition.parentRect;
 
     return Positioned(
-      left: position.dx - theme.padding.left,
-      top: position.dy - theme.padding.top,
+      left: position.dx - theme.padding,
+      top: position.dy - theme.padding,
       child: Builder(
         builder: (context) {
           final child = IgnorePointer(
             child: Container(
-              width: size.width + theme.padding.horizontal,
-              height: size.height + theme.padding.vertical,
+              width: size.width + (theme.padding * 2),
+              height: size.height + (theme.padding * 2),
               foregroundDecoration: theme.decoration,
             ),
           );
@@ -292,6 +292,7 @@ class _FocusHighlightIndicator extends StatelessWidget {
             return ClipRect(
               clipper: _ParentRectClipper(
                 parentRect: parentRect,
+                renderBox: highlightPosition.renderBox,
                 context: context,
                 padding: theme.padding,
               ),
@@ -308,24 +309,39 @@ class _FocusHighlightIndicator extends StatelessWidget {
 
 class _ParentRectClipper extends CustomClipper<Rect> {
   final Rect parentRect;
+  final RenderBox renderBox;
   final BuildContext context;
-  final EdgeInsets padding;
+  final double padding;
 
   _ParentRectClipper({
     required this.parentRect,
+    required this.renderBox,
     required this.context,
     required this.padding,
   });
 
   @override
   Rect getClip(Size size) {
-    final parentRectWithPadding = padding.inflateRect(parentRect);
+    final parentRectWithPadding =
+        EdgeInsets.all(padding).inflateRect(parentRect);
 
-    final renderBox = context.findRenderObject() as RenderBox;
+    final renderBox2 = context.findRenderObject() as RenderBox;
 
-    final topLeft = renderBox.globalToLocal(parentRectWithPadding.topLeft);
+    final topLeft2 = renderBox2.globalToLocal(parentRectWithPadding.topLeft);
+    final bottomRight2 =
+        renderBox2.globalToLocal(parentRectWithPadding.bottomRight);
+
+    print("topLeft2: $topLeft2");
+    print("bottomRight2: $bottomRight2");
+
+    final topLeft = renderBox.globalToLocal(parentRectWithPadding.topLeft) +
+        Offset(padding, padding);
     final bottomRight =
-        renderBox.globalToLocal(parentRectWithPadding.bottomRight);
+        renderBox.globalToLocal(parentRectWithPadding.bottomRight) +
+            Offset(padding, padding);
+
+    print("topLeft: $topLeft");
+    print("bottomRight: $bottomRight");
 
     final localRect = Rect.fromPoints(topLeft, bottomRight);
     return localRect;

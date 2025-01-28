@@ -22,7 +22,7 @@ class _MyAppState extends State<MyApp> {
             decoration: BoxDecoration(
               border: Border.all(color: Colors.red, width: 2),
             ),
-            padding: EdgeInsets.all(8),
+            padding: 8,
           ),
           child: widget!,
         );
@@ -61,7 +61,7 @@ class _RootPageState extends State<RootPage> {
             Text("The following widget is customizing the focus highlight:"),
             AccessibleTheme(
               accessibilityTheme: AccessibilityThemeData(
-                padding: EdgeInsets.zero,
+                padding: 0,
                 decoration: BoxDecoration(
                   border: Border.all(color: Colors.green, width: 4),
                   borderRadius: BorderRadius.circular(8),

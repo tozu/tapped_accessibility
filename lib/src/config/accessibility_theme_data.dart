@@ -8,7 +8,7 @@ class AccessibilityThemeData {
   /// The padding to be applied to accessibility UI elements.
   ///
   /// This defines the space between the content and the edges of the UI element.
-  final EdgeInsets padding;
+  final double padding;
 
   /// The decoration to be applied to accessibility UI elements.
   ///
