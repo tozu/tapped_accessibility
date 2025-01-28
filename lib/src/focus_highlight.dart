@@ -98,7 +98,7 @@ class _FocusHighlightState extends State<FocusHighlight> {
         },
         child: Listener(
           // Whenever the user tabs somewhere, we want to deactivate the tab-mode.
-          // onPointerDown: (_) => _deactivateTabMode(),
+          onPointerDown: (_) => _deactivateTabMode(),
           child: _FocusableHighlight(
             showFocus: _isTabPressed,
             child: HardwareKeyboardUsage(
