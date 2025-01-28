@@ -22,10 +22,11 @@ class AccessibilityThemeData {
   final BoxDecoration decoration;
 
   AccessibilityThemeData({
-    required this.verticalPadding,
-    required this.horizontalPadding,
+    required double verticalPadding,
+    required double horizontalPadding,
     required this.decoration,
-  });
+  })  : horizontalPadding = horizontalPadding + decoration.padding.horizontal,
+        verticalPadding = verticalPadding + decoration.padding.vertical;
 
   @override
   bool operator ==(Object other) =>

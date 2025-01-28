@@ -22,8 +22,8 @@ class _MyAppState extends State<MyApp> {
             decoration: BoxDecoration(
               border: Border.all(color: Colors.red, width: 2),
             ),
-            horizontalPadding: 8,
-            verticalPadding: 4,
+            horizontalPadding: 6,
+            verticalPadding: 2,
           ),
           child: widget!,
         );
