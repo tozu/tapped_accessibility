@@ -25,7 +25,7 @@ class FocusNodeData {
       offset: offset,
       size: size,
       isInsideParent: isInsideParent,
-      localParentRect: renderBox.toLocalParentRect(parentRect: parentRect),
+      parentRect: parentRect,
     );
   }
 
@@ -50,14 +50,14 @@ class HighlightPosition {
   final Offset offset;
   final BuildContext focusNodeContext;
   final bool isInsideParent;
-  final Rect? localParentRect;
+  final Rect? parentRect;
 
   HighlightPosition({
     required this.size,
     required this.offset,
     required this.focusNodeContext,
     required this.isInsideParent,
-    required this.localParentRect,
+    required this.parentRect,
   });
 
   @override
@@ -69,7 +69,7 @@ class HighlightPosition {
           offset == other.offset &&
           focusNodeContext == other.focusNodeContext &&
           isInsideParent == other.isInsideParent &&
-          localParentRect == other.localParentRect;
+          parentRect == other.parentRect;
 
   @override
   int get hashCode =>
@@ -77,7 +77,7 @@ class HighlightPosition {
       offset.hashCode ^
       focusNodeContext.hashCode ^
       isInsideParent.hashCode ^
-      localParentRect.hashCode;
+      parentRect.hashCode;
 }
 
 extension RectExtensions on Rect {
@@ -89,16 +89,5 @@ extension RectExtensions on Rect {
 extension on RenderBox {
   Rect toRect() {
     return localToGlobal(Offset.zero) & size;
-  }
-
-  Rect? toLocalParentRect({required Rect? parentRect}) {
-    if (parentRect == null) return null;
-
-    return Rect.fromLTRB(
-      globalToLocal(parentRect.topLeft).dx,
-      globalToLocal(parentRect.topLeft).dy,
-      globalToLocal(parentRect.bottomRight).dx,
-      globalToLocal(parentRect.bottomRight).dy,
-    );
   }
 }

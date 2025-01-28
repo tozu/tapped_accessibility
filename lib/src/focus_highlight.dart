@@ -276,7 +276,7 @@ class _FocusHighlightIndicator extends StatelessWidget {
     final position = highlightPosition.offset;
     final size = highlightPosition.size;
 
-    final localParentRect = highlightPosition.localParentRect;
+    final parentRect = highlightPosition.parentRect;
 
     return Positioned(
       left: position.dx - theme.padding.left,
@@ -287,13 +287,17 @@ class _FocusHighlightIndicator extends StatelessWidget {
             child: Container(
               width: size.width + theme.padding.horizontal,
               height: size.height + theme.padding.vertical,
-              decoration: theme.decoration,
+              foregroundDecoration: theme.decoration,
             ),
           );
 
-          if (localParentRect != null) {
+          if (parentRect != null) {
             return ClipRect(
-              clipper: _ParentRectClipper(parentRect: localParentRect),
+              clipper: _ParentRectClipper(
+                parentRect: parentRect,
+                context: context,
+                padding: theme.padding,
+              ),
               child: child,
             );
           } else {
@@ -307,15 +311,29 @@ class _FocusHighlightIndicator extends StatelessWidget {
 
 class _ParentRectClipper extends CustomClipper<Rect> {
   final Rect parentRect;
+  final BuildContext context;
+  final EdgeInsets padding;
 
-  _ParentRectClipper({required this.parentRect});
+  _ParentRectClipper({
+    required this.parentRect,
+    required this.context,
+    required this.padding,
+  });
 
   @override
-  Rect getClip(Size size) => parentRect;
+  Rect getClip(Size size) {
+    final parentRectWithPadding = padding.inflateRect(parentRect);
 
-  @override
-  bool shouldReclip(covariant CustomClipper<Rect> oldClipper) {
-    return oldClipper is _ParentRectClipper &&
-        oldClipper.parentRect != parentRect;
+    final renderBox = context.findRenderObject() as RenderBox;
+
+    final topLeft = renderBox.globalToLocal(parentRectWithPadding.topLeft);
+    final bottomRight =
+        renderBox.globalToLocal(parentRectWithPadding.bottomRight);
+
+    final localRect = Rect.fromPoints(topLeft, bottomRight);
+    return localRect;
   }
+
+  @override
+  bool shouldReclip(covariant CustomClipper<Rect> oldClipper) => true;
 }
