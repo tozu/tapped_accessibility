@@ -276,14 +276,14 @@ class _FocusHighlightIndicator extends StatelessWidget {
     final parentRect = highlightPosition.parentRect;
 
     return Positioned(
-      left: position.dx - theme.padding,
-      top: position.dy - theme.padding,
+      left: position.dx - theme.horizontalPadding,
+      top: position.dy - theme.verticalPadding,
       child: Builder(
         builder: (context) {
           final child = IgnorePointer(
             child: Container(
-              width: size.width + (theme.padding * 2),
-              height: size.height + (theme.padding * 2),
+              width: size.width + (theme.horizontalPadding * 2),
+              height: size.height + (theme.verticalPadding * 2),
               foregroundDecoration: theme.decoration,
             ),
           );
@@ -293,8 +293,8 @@ class _FocusHighlightIndicator extends StatelessWidget {
               clipper: _ParentRectClipper(
                 parentRect: parentRect,
                 renderBox: highlightPosition.renderBox,
-                context: context,
-                padding: theme.padding,
+                verticalPadding: theme.verticalPadding,
+                horizontalPadding: theme.horizontalPadding,
               ),
               child: child,
             );
@@ -310,43 +310,34 @@ class _FocusHighlightIndicator extends StatelessWidget {
 class _ParentRectClipper extends CustomClipper<Rect> {
   final Rect parentRect;
   final RenderBox renderBox;
-  final BuildContext context;
-  final double padding;
+  final double verticalPadding;
+  final double horizontalPadding;
 
   _ParentRectClipper({
     required this.parentRect,
     required this.renderBox,
-    required this.context,
-    required this.padding,
+    required this.verticalPadding,
+    required this.horizontalPadding,
   });
 
   @override
   Rect getClip(Size size) {
-    final parentRectWithPadding =
-        EdgeInsets.all(padding).inflateRect(parentRect);
+    final parentRectWithPadding = EdgeInsets.symmetric(
+      horizontal: horizontalPadding,
+      vertical: verticalPadding,
+    ).inflateRect(parentRect);
 
-    final renderBox2 = context.findRenderObject() as RenderBox;
+    final paddingOffset = Offset(horizontalPadding, verticalPadding);
 
-    final topLeft2 = renderBox2.globalToLocal(parentRectWithPadding.topLeft);
-    final bottomRight2 =
-        renderBox2.globalToLocal(parentRectWithPadding.bottomRight);
+    final topLeft =
+        renderBox.globalToLocal(parentRectWithPadding.topLeft + paddingOffset);
 
-    print("topLeft2: $topLeft2");
-    print("bottomRight2: $bottomRight2");
+    final bottomRight = renderBox
+        .globalToLocal(parentRectWithPadding.bottomRight + paddingOffset);
 
-    final topLeft = renderBox.globalToLocal(parentRectWithPadding.topLeft) +
-        Offset(padding, padding);
-    final bottomRight =
-        renderBox.globalToLocal(parentRectWithPadding.bottomRight) +
-            Offset(padding, padding);
-
-    print("topLeft: $topLeft");
-    print("bottomRight: $bottomRight");
-
-    final localRect = Rect.fromPoints(topLeft, bottomRight);
-    return localRect;
+    return Rect.fromPoints(topLeft, bottomRight);
   }
 
   @override
-  bool shouldReclip(covariant CustomClipper<Rect> oldClipper) => true;
+  bool shouldReclip(covariant _ParentRectClipper oldClipper) => true;
 }

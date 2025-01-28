@@ -8,7 +8,12 @@ class AccessibilityThemeData {
   /// The padding to be applied to accessibility UI elements.
   ///
   /// This defines the space between the content and the edges of the UI element.
-  final double padding;
+  final double verticalPadding;
+
+  /// The padding to be applied to accessibility UI elements.
+  ///
+  /// This defines the space between the content and the edges of the UI element.
+  final double horizontalPadding;
 
   /// The decoration to be applied to accessibility UI elements.
   ///
@@ -16,21 +21,29 @@ class AccessibilityThemeData {
   /// background color, border, and shape.
   final BoxDecoration decoration;
 
-  AccessibilityThemeData({required this.padding, required this.decoration});
+  AccessibilityThemeData({
+    required this.verticalPadding,
+    required this.horizontalPadding,
+    required this.decoration,
+  });
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is AccessibilityThemeData &&
           runtimeType == other.runtimeType &&
-          padding == other.padding &&
+          verticalPadding == other.verticalPadding &&
+          horizontalPadding == other.horizontalPadding &&
           decoration == other.decoration;
 
   @override
-  int get hashCode => padding.hashCode ^ decoration.hashCode;
+  int get hashCode =>
+      verticalPadding.hashCode ^
+      horizontalPadding.hashCode ^
+      decoration.hashCode;
 
   @override
   String toString() {
-    return 'AccessibilityThemeData{padding: $padding, decoration: $decoration}';
+    return 'AccessibilityThemeData{verticalPadding: $verticalPadding, horizontalPadding: $horizontalPadding, decoration: $decoration}';
   }
 }
