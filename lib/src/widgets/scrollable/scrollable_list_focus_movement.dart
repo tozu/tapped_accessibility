@@ -1,4 +1,4 @@
-part of '../tapped_accessibility.dart';
+part of '../widgets.dart';
 
 /// Takes care to move the focus to the next correct item if the provided [child] is a [Scrollable].
 /// Make sure to use [ScrollableListFocusMovement.requiredCacheExtent] to get the correct cache extent if

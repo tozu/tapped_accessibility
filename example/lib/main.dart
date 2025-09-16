@@ -60,7 +60,7 @@ class _RootPageState extends State<RootPage> {
             ),
             const SizedBox(height: 48),
             Text("The following widget is customizing the focus highlight:"),
-            AccessibleTheme(
+            AccessibilityTheme(
               accessibilityTheme: AccessibilityThemeData(
                 verticalPadding: 0,
                 horizontalPadding: 0,

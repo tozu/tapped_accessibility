@@ -1,4 +1,4 @@
-part of '../tapped_accessibility.dart';
+part of 'widgets.dart';
 
 /// A widget that provides accessibility features and focus management.
 ///

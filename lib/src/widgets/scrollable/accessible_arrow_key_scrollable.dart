@@ -1,4 +1,4 @@
-part of '../tapped_accessibility.dart';
+part of '../widgets.dart';
 
 /// A widget that enables scrolling using arrow keys for improved accessibility.
 ///

@@ -1,4 +1,4 @@
-part of '../../tapped_accessibility.dart';
+import 'package:flutter/widgets.dart';
 
 /// This class encapsulates the styling information used for
 /// a focused element.

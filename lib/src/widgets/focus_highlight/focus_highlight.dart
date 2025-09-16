@@ -1,4 +1,4 @@
-part of '../tapped_accessibility.dart';
+part of '../widgets.dart';
 
 /// A widget that provides visual focus highlighting for keyboard navigation.
 ///
@@ -76,7 +76,7 @@ class _FocusHighlightState extends State<FocusHighlight> {
 
   @override
   Widget build(BuildContext context) {
-    return AccessibleTheme(
+    return AccessibilityTheme(
       accessibilityTheme: widget.defaultTheme,
       child: Focus(
         canRequestFocus: false,
@@ -269,7 +269,7 @@ class _FocusHighlightIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = AccessibleTheme.of(highlightPosition.focusNodeContext);
+    final theme = AccessibilityTheme.of(highlightPosition.focusNodeContext);
     final position = highlightPosition.offset;
     final size = highlightPosition.size;
 
