@@ -28,12 +28,12 @@ MaterialApp(
     builder: (context, child) {
       return FocusHighlight(
         defaultTheme: AccessibilityThemeData(
-          horizontalPadding: 8.0,
-          verticalPadding: 8.0,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12),
             border: Border.all(color: Colors.green),
           ),
+          horizontalPadding: 8.0,
+          verticalPadding: 8.0,
         ),
         child: child!,
       );
