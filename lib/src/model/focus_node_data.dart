@@ -1,30 +1,15 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/widgets.dart';
 
 class FocusNodeData {
   final BuildContext context;
   final RenderBox renderBox;
   final RenderBox? parentScrollableRenderBox;
 
-  FocusNodeData({
+  const FocusNodeData({
     required this.context,
     required this.renderBox,
     required this.parentScrollableRenderBox,
   });
-
-  HighlightPosition getPosition() {
-    final size = renderBox.size;
-    final offset = renderBox.localToGlobal(Offset.zero);
-
-    final parentRect = parentScrollableRenderBox?.toRect();
-
-    return HighlightPosition(
-      focusNodeContext: context,
-      offset: offset,
-      renderBox: renderBox,
-      size: size,
-      parentRect: parentRect,
-    );
-  }
 
   @override
   bool operator ==(Object other) =>
@@ -40,45 +25,4 @@ class FocusNodeData {
       context.hashCode ^
       renderBox.hashCode ^
       parentScrollableRenderBox.hashCode;
-}
-
-class HighlightPosition {
-  final Size size;
-  final Offset offset;
-  final BuildContext focusNodeContext;
-  final RenderBox renderBox;
-  final Rect? parentRect;
-
-  HighlightPosition({
-    required this.size,
-    required this.offset,
-    required this.focusNodeContext,
-    required this.renderBox,
-    required this.parentRect,
-  });
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is HighlightPosition &&
-          runtimeType == other.runtimeType &&
-          size == other.size &&
-          offset == other.offset &&
-          focusNodeContext == other.focusNodeContext &&
-          renderBox == other.renderBox &&
-          parentRect == other.parentRect;
-
-  @override
-  int get hashCode =>
-      size.hashCode ^
-      offset.hashCode ^
-      focusNodeContext.hashCode ^
-      renderBox.hashCode ^
-      parentRect.hashCode;
-}
-
-extension on RenderBox {
-  Rect toRect() {
-    return localToGlobal(Offset.zero) & size;
-  }
 }

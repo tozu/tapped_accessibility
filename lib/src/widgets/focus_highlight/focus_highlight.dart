@@ -1,4 +1,4 @@
-part of '../tapped_accessibility.dart';
+part of '../widgets.dart';
 
 /// A widget that provides visual focus highlighting for keyboard navigation.
 ///
@@ -53,6 +53,9 @@ class FocusHighlight extends StatefulWidget {
   /// By default, this includes the Tab key and arrow keys (up, down, left, right).
   final List<LogicalKeyboardKey> keepActiveKeys;
 
+  // TODO(tobiaszuber): make defaultTheme optional and provide a default one.
+  // This will make it easier to use the package without any configuration.
+
   const FocusHighlight({
     required this.child,
     required this.defaultTheme,
@@ -76,7 +79,7 @@ class _FocusHighlightState extends State<FocusHighlight> {
 
   @override
   Widget build(BuildContext context) {
-    return AccessibleTheme(
+    return AccessibilityTheme(
       accessibilityTheme: widget.defaultTheme,
       child: Focus(
         canRequestFocus: false,
@@ -260,84 +263,4 @@ class _FocusableHighlightState extends State<_FocusableHighlight>
     _cachedFocusNodeData = null;
     _highlightPosition.value = null;
   }
-}
-
-class _FocusHighlightIndicator extends StatelessWidget {
-  final HighlightPosition highlightPosition;
-
-  const _FocusHighlightIndicator({required this.highlightPosition});
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = AccessibleTheme.of(highlightPosition.focusNodeContext);
-    final position = highlightPosition.offset;
-    final size = highlightPosition.size;
-
-    final parentRect = highlightPosition.parentRect;
-
-    return Positioned(
-      left: position.dx - theme.horizontalPadding,
-      top: position.dy - theme.verticalPadding,
-      child: Builder(
-        builder: (context) {
-          final child = IgnorePointer(
-            child: Container(
-              width: size.width + (theme.horizontalPadding * 2),
-              height: size.height + (theme.verticalPadding * 2),
-              foregroundDecoration: theme.decoration,
-            ),
-          );
-
-          if (parentRect != null) {
-            return ClipRect(
-              clipper: _ParentRectClipper(
-                parentRect: parentRect,
-                renderBox: highlightPosition.renderBox,
-                verticalPadding: theme.verticalPadding,
-                horizontalPadding: theme.horizontalPadding,
-              ),
-              child: child,
-            );
-          } else {
-            return child;
-          }
-        },
-      ),
-    );
-  }
-}
-
-class _ParentRectClipper extends CustomClipper<Rect> {
-  final Rect parentRect;
-  final RenderBox renderBox;
-  final double verticalPadding;
-  final double horizontalPadding;
-
-  _ParentRectClipper({
-    required this.parentRect,
-    required this.renderBox,
-    required this.verticalPadding,
-    required this.horizontalPadding,
-  });
-
-  @override
-  Rect getClip(Size size) {
-    final parentRectWithPadding = EdgeInsets.symmetric(
-      horizontal: horizontalPadding,
-      vertical: verticalPadding,
-    ).inflateRect(parentRect);
-
-    final paddingOffset = Offset(horizontalPadding, verticalPadding);
-
-    final topLeft =
-        renderBox.globalToLocal(parentRectWithPadding.topLeft + paddingOffset);
-
-    final bottomRight = renderBox
-        .globalToLocal(parentRectWithPadding.bottomRight + paddingOffset);
-
-    return Rect.fromPoints(topLeft, bottomRight);
-  }
-
-  @override
-  bool shouldReclip(covariant _ParentRectClipper oldClipper) => true;
 }

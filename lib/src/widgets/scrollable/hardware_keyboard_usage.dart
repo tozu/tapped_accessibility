@@ -1,4 +1,4 @@
-part of '../tapped_accessibility.dart';
+part of '../widgets.dart';
 
 /// Inherited widget that provides information about hardware keyboard usage.
 ///
