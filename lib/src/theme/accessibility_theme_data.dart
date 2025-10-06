@@ -25,9 +25,9 @@ class AccessibilityThemeData {
     required double verticalPadding,
     required double horizontalPadding,
     required this.decoration,
-  })  : horizontalPadding =
-            horizontalPadding + decoration.padding.horizontal / 2,
-        verticalPadding = verticalPadding + decoration.padding.vertical / 2;
+  })  : 
+      horizontalPadding = horizontalPadding + decoration.padding.horizontal / 2,
+      verticalPadding = verticalPadding + decoration.padding.vertical / 2;
 
   @override
   bool operator ==(Object other) =>
