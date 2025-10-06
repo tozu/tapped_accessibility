@@ -53,6 +53,9 @@ class FocusHighlight extends StatefulWidget {
   /// By default, this includes the Tab key and arrow keys (up, down, left, right).
   final List<LogicalKeyboardKey> keepActiveKeys;
 
+  // TODO(tobiaszuber): make defaultTheme optional and provide a default one.
+  // This will make it easier to use the package without any configuration.
+
   const FocusHighlight({
     required this.child,
     required this.defaultTheme,

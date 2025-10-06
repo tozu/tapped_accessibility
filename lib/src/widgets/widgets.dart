@@ -5,7 +5,8 @@ import 'package:flutter/rendering.dart';
 
 import 'package:tapped_accessibility/src/model/models.dart';
 import 'package:tapped_accessibility/src/extensions/extensions.dart';
-import 'package:tapped_accessibility/src/theme/theme.dart';
+import 'package:tapped_accessibility/src/theme/accessibility_theme.dart';
+import 'package:tapped_accessibility/src/theme/accessibility_theme_data.dart';
 
 part 'focus_highlight/focus_highlight.dart';
 part 'focus_highlight/__focus_highlight_indicator.dart';

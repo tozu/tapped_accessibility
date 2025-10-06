@@ -1,12 +1,12 @@
 import 'package:flutter/widgets.dart';
-import 'package:tapped_accessibility/src/theme/theme.dart';
+import 'package:tapped_accessibility/src/theme/accessibility_theme_data.dart';
 
 /// A widget that provides accessibility theme data to its descendants.
 ///
 /// This widget is typically passed into [FocusHighlight.defaultTheme] at
 /// the root of your application to define the default accessibility theme.
 /// However, it can also be used to customize the visuals of specific components
-/// by wrapping them in an [AccessiblityTheme].
+/// by wrapping them in an [AccessibilityTheme].
 ///
 /// Example:
 ///
